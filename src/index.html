@@ -1,10 +1,145 @@
 <body>
-  <h1>it works!</h1>
-  <style>
-    body { background: black; color: white; font-family: sans-serif; }
-  </style>
-  <script>
-    const title = document.querySelector("h1");
-    title.onclick = () => (title.textContent = "you clicked it");
-  </script>
+    <title>DVD</title>
+
+    <style>
+        * {margin: 0; padding: 0;}
+        body { overflow: hidden; background: black;}
+        canvas { display: block;}
+    </style>
+    <canvas id="screen"></canvas>
+    <script>
+        const canvas = document.getElementById("screen");
+        const ctx = canvas.getContext("2d");
+
+        let logoColor = {
+            r: 255,
+            g: 50,
+            b:150
+        };
+
+        let text = {
+            content: "WOW",
+            x: 200,
+            y: 300,
+            xspeed: 300,
+            yspeed: 300,
+            width: 0,
+            height: 70
+        };
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            ctx.font = "Bold 70px Futura";
+            ctx.textBaseline = "top"
+
+            text.width = ctx.measureText(text.content).width;
+
+        }
+
+        window.addEventListener("resize", resize);
+        resize();
+
+        function pickColor() {
+            logoColor = {
+            r: Math.floor(Math.random() * 255),
+            g: Math.floor(Math.random() * 255),
+            b: Math.floor(Math.random() * 255),
+            }
+        }
+
+        function drawBackground() {
+
+            let gradient = ctx.createRadialGradient(
+                canvas.width / 2,
+                canvas.height / 2,
+                0,
+
+                canvas.width / 2,
+                canvas.height / 2,
+                canvas.width
+            );
+
+            gradient.addColorStop(0, "#151515");
+            gradient.addColorStop(1, "#000000");
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+        }
+
+        function drawText() {
+
+            let color = `rgb(${logoColor.r}, ${logoColor.g}, ${logoColor.b})`
+
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 30;
+
+            ctx.fillStyle = color;
+
+            ctx.fillText(
+                text.content,
+                text.x,
+                text.y
+            );
+
+            ctx.shadowBlur = 0
+        }
+
+        function checkHitBox() {
+
+            let hit = false
+
+            if (
+                text.x + text.width >= canvas.width || 
+                text.x <= 0
+            ) {
+                text.xspeed *= -1;
+                hit = true;
+            }
+
+            if (
+                text.y + text.height >= canvas.height ||
+                text.y <= 0
+            ) {
+                text.yspeed *= -1
+                hit = true;
+            }
+
+            if (hit) {
+                pickColor();
+            }
+        }
+
+        let previousTime = 0;
+
+        function update(time) {
+            let deltaTime = (time - previousTime)/1000 ;
+
+            previousTime = time;
+
+            if (deltaTime > 0.05) {
+                deltaTime = 0.05
+            }
+            
+            drawBackground();
+
+            text.x += text.xspeed * deltaTime;
+            text.y += text.yspeed * deltaTime;
+
+            checkHitBox();
+            drawText();
+            
+            requestAnimationFrame(update);
+        }
+
+        pickColor();
+        requestAnimationFrame(update);
+
+    </script>
 </body>
