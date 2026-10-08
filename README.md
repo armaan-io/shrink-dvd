@@ -17,6 +17,12 @@ If a collision is detected, then the velocity is changed to the opposite directi
 
 Also added a slight glow to the text and a radial gradient to the background.
 
+# Bug
+
+I am aware of a glitchy kind of bug, I however liked the effect that it produces so I have decided to leave it in. 
+
+Its actually a feature!
+
 ## building
 ```
 npm install
